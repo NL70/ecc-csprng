@@ -1,1 +1,2 @@
 numpy==1.26.4
+pyfiglet==1.0.2
