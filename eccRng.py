@@ -1,4 +1,6 @@
 import os
+from math import floor
+
 # noinspection PyUnresolvedReferences
 from tqdm import tqdm
 
@@ -123,7 +125,7 @@ def ecc_rng(num_of_bits):
     global counter
     s = seed
     result = []
-    num_of_iterations = num_of_bits / 16
+    num_of_iterations = floor(num_of_bits / 16)
     print("\nGenerating random number...")
     # Generating the raw rQx
     for _ in tqdm(range(int(num_of_iterations))):
