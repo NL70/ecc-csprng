@@ -1,7 +1,8 @@
 import os
 # noinspection PyUnresolvedReferences
 from pyfiglet import Figlet
-import numpy as np
+
+# import numpy as np
 
 # Seed value
 seed = 0
@@ -24,8 +25,44 @@ Gy = 0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5
 
 
 def curve_function(x):
-    global p, b, a
-    return (x ** 3 - a * x + b) % p
+    return (x ** 3 + a * x + b) % p
+
+
+def point_addition(point_p, point_q):
+    if point_p == "inf":
+        return point_q
+    if point_q == "inf":
+        return point_p
+
+    x1, y1 = point_p
+    x2, y2 = point_q
+
+    if point_p != point_q:
+        # Point addition
+        # Obtaining tangent through (y1-y2)/(x1-x2)
+        slope = ((y2 - y1) * pow(x2 - x1, -1, p)) % p
+    else:
+        # Point doubling
+        # Obtaining tangent through derivative of curve function
+        slope = ((3 * x1 ** 2 + a) * pow(2 * y1, -1, p)) % p
+
+    # Not sure why this works, math moment
+    x3 = (slope ** 2 - x1 - x2) % p
+    y3 = (slope * (x1 - x3) - y1) % p
+
+    return x3, y3
+
+
+# Double and Add algorithm
+def point_multiplication(scalar, point):
+    result = "inf"
+    current = point
+
+    for i in bin(scalar)[2:][::-1]:
+        if i == "1":
+            result = point_addition(result, current)
+        current = point_addition(current, current)
+    return result
 
 
 def get_random_no(num_of_bits):
@@ -44,15 +81,37 @@ def generate_seed(random_no):
         seed = random_no
 
 
+# Generates a random k where 1 <= k < n  for point multiplication
+def generate_random_scalar():
+    bit_length = (n.bit_length() + 7)  # Determine the number of bits needed
+    while True:
+        rand_int = get_random_no(bit_length)
+        if 1 <= rand_int < n:
+            return rand_int
+
+
+def is_point_on_curve(point):
+    x, y = point
+    return curve_function(x) == (y ** 2) % p
+
+
 def generate_points_on_curve():
-    print("todo!")
-    return 1, 2
+    # Multiply generator point by k (1 to n)
+    k = generate_random_scalar()
+    point = point_multiplication(k, (Gx, Gy))
+    return point
 
 
 def update_generator_points():
     global Px, Py, Qx, Qy
     Px, Py = generate_points_on_curve()
     Qx, Qy = generate_points_on_curve()
+    if is_point_on_curve((Px, Py)) and is_point_on_curve((Qx, Qy)):
+        print("New points generated!")
+        print(f"P: ({Px}, {Py})")
+        print(f"Q: ({Qx}, {Qy})")
+    else:
+        raise ValueError("Invalid points generated!")
 
 
 def initialisation():
@@ -70,3 +129,4 @@ def initialisation():
 
 
 initialisation()
+# TODO: add a input handler
