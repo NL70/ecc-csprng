@@ -3,6 +3,8 @@ from math import floor
 
 # noinspection PyUnresolvedReferences
 from tqdm import tqdm
+# noinspection PyUnresolvedReferences
+from numba import jit
 
 # import numpy as np
 
@@ -146,3 +148,7 @@ def ecc_rng(num_of_bits):
     concatenated_number = int(''.join(map(str, result)))
     print("\nNumber generated:")
     return concatenated_number
+# TODO: Refactor code to shift all global variables to index.py,
+#  then remove all calls to global variables in this
+#  file so that jit can be used
+# Consider replacing affine coordinates with jacobian or projective coordinates
