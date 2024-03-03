@@ -2,9 +2,14 @@ import os
 from math import floor
 
 # noinspection PyUnresolvedReferences
+from numba import jit
+# noinspection PyUnresolvedReferences
+from rich import print as rprint
+# noinspection PyUnresolvedReferences
 from tqdm import tqdm
 # noinspection PyUnresolvedReferences
-from numba import jit
+from rich.console import Console
+
 
 # import numpy as np
 
@@ -116,9 +121,9 @@ def update_generator_points():
     Px, Py = generate_points_on_curve()
     Qx, Qy = generate_points_on_curve()
     if is_point_on_curve((Px, Py)) and is_point_on_curve((Qx, Qy)):
-        print("New points generated!")
-        print(f"P: ({Px}, {Py})")
-        print(f"Q: ({Qx}, {Qy})")
+        rprint("New points generated!")
+        rprint(f"P: ({Px}, {Py})")
+        rprint(f"Q: ({Qx}, {Qy})")
     else:
         raise ValueError("Invalid points generated!")
 
@@ -128,26 +133,30 @@ def ecc_rng(num_of_bits):
     s = seed
     result = []
     num_of_iterations = floor(num_of_bits / 16)
-    print("\nGenerating random number...")
-    # Generating the raw rQx
+    rprint(f"Generating {num_of_bits} bits...")
     for _ in tqdm(range(int(num_of_iterations))):
         if counter >= reseed_interval:
-            print("Reseeding...")
+            rprint("Reseeding...")
             generate_seed()
             s = seed
             counter = 0
+
         s_p = point_multiplication(s, (Px, Py))
         r = s_p[0] % n
         r_q = point_multiplication(r, (Qx, Qy))
+
         random_value = r_q[0] & 0xFFFF  # Removes first 16 bits
         result.append(random_value)
+
         # Generating the next seed
         r_p = point_multiplication(r, (Px, Py))
         s = r_p[0] % n
         counter += 1
+
     concatenated_number = int(''.join(map(str, result)))
-    print("\nNumber generated:")
+    rprint("\nNumber generated:")
     return concatenated_number
+
 # TODO: Refactor code to shift all global variables to index.py,
 #  then remove all calls to global variables in this
 #  file so that jit can be used
