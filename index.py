@@ -2,6 +2,8 @@ from math import floor
 from time import sleep
 
 from eccRng import ecc_rng, generate_seed, update_generator_points
+import tests
+
 # noinspection PyUnresolvedReferences
 from pyfiglet import Figlet
 import cProfile
@@ -11,6 +13,8 @@ from rich import print as rprint
 from rich.console import Console
 
 console = Console()
+
+print("???")
 
 
 def initialisation():
