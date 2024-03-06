@@ -4,3 +4,4 @@ env/
 .DS_Store
 .idea
 /results.txt
+/test_results.csv

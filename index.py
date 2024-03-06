@@ -3,7 +3,8 @@ from time import sleep
 
 from eccRng import ecc_rng, generate_seed, update_generator_points
 import tests
-
+# noinspection PyUnresolvedReferences
+from tqdm import tqdm
 # noinspection PyUnresolvedReferences
 from pyfiglet import Figlet
 import cProfile
@@ -28,7 +29,10 @@ def initialisation():
             "you like"
             " to generate new points? (Y/N): ")
         if should_generate_points.lower() == "y":
-            update_generator_points()
+            Px, Py, Qx, Qy = update_generator_points()
+            rprint("New points generated!")
+            rprint(f"P: ({Px}, {Py})")
+            rprint(f"Q: ({Qx}, {Qy})")
             break
         elif should_generate_points.lower() == "n":
             break
@@ -53,12 +57,18 @@ def initialisation():
         elif should_profile.lower() == "n":
             break
 
-    result = ecc_rng(int(num_of_bits))
+    rprint(f"Generating {num_of_bits} bits...")
+    result = []
+
+    for value in tqdm(ecc_rng(int(num_of_bits)), total=num_of_iterations):
+        result.append(value)
+    result = int(''.join(map(str, result)))
 
     store_file = open("results.txt", "w")
     store_file.write(str(result))
     store_file.close()
 
+    rprint("\nNumber generated:")
     rprint(result)
     rprint("Results have been stored in results.txt")
 

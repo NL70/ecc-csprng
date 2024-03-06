@@ -1,14 +1,6 @@
 import os
 from math import floor
 
-# noinspection PyUnresolvedReferences
-from numba import jit
-# noinspection PyUnresolvedReferences
-from rich import print as rprint
-# noinspection PyUnresolvedReferences
-from tqdm import tqdm
-# noinspection PyUnresolvedReferences
-from rich.console import Console
 
 
 # import numpy as np
@@ -121,9 +113,7 @@ def update_generator_points():
     Px, Py = generate_points_on_curve()
     Qx, Qy = generate_points_on_curve()
     if is_point_on_curve((Px, Py)) and is_point_on_curve((Qx, Qy)):
-        rprint("New points generated!")
-        rprint(f"P: ({Px}, {Py})")
-        rprint(f"Q: ({Qx}, {Qy})")
+        return Px, Py, Qx, Qy
     else:
         raise ValueError("Invalid points generated!")
 
@@ -133,10 +123,9 @@ def ecc_rng(num_of_bits):
     s = seed
     result = []
     num_of_iterations = floor(num_of_bits / 16)
-    rprint(f"Generating {num_of_bits} bits...")
-    for _ in tqdm(range(int(num_of_iterations))):
+    for _ in range(int(num_of_iterations)):
         if counter >= reseed_interval:
-            rprint("Reseeding...")
+            # rprint("Reseeding...")
             generate_seed()
             s = seed
             counter = 0
@@ -152,10 +141,10 @@ def ecc_rng(num_of_bits):
         r_p = point_multiplication(r, (Px, Py))
         s = r_p[0] % n
         counter += 1
+        yield random_value
 
-    concatenated_number = int(''.join(map(str, result)))
-    rprint("\nNumber generated:")
-    return concatenated_number
+    #concatenated_number = int(''.join(map(str, result)))
+    #return concatenated_number
 
 # TODO: Refactor code to shift all global variables to index.py,
 #  then remove all calls to global variables in this
