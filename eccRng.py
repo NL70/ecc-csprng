@@ -1,8 +1,6 @@
 import os
 from math import floor
 
-
-
 # import numpy as np
 
 # Seed value
@@ -143,8 +141,8 @@ def ecc_rng(num_of_bits):
         counter += 1
         yield random_value
 
-    #concatenated_number = int(''.join(map(str, result)))
-    #return concatenated_number
+    # concatenated_number = int(''.join(map(str, result)))
+    # return concatenated_number
 
 # TODO: Refactor code to shift all global variables to index.py,
 #  then remove all calls to global variables in this
