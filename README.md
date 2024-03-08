@@ -24,6 +24,18 @@ pip install -r requirements.txt
 # Runs the program
 python3 index.py
 ```
+## Executing the program
+```bash
+python3 index.py
+# Note: Ensure you have the virtual environment activated
+````
+
+## Testing the program
+```bash
+python3 testHandler.py
+# Note: Ensure you have the virtual environment activated
+# You can adjust testing parameters by changing variables in testHandler.py and tests.py
+```
 
 ## Exiting venv
 ```bash
